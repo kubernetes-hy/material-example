@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hashresponse-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hashresponse
+  template:
+    metadata:
+      labels:
+        app: hashresponse
+    spec:
+      containers:
+        - name: hashresponse
+          image: jakousa/dwk-app2
