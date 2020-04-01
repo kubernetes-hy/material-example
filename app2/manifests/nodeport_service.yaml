@@ -3,10 +3,12 @@ kind: Service
 metadata:
   name: hashresponse-svc
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: hashresponse
   ports:
-    - port: 2345
+    - name: http
+      nodePort: 30080
       protocol: TCP
+      port: 1234
       targetPort: 3000
