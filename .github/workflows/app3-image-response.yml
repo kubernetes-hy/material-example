@@ -1,11 +1,11 @@
-name: Release app3
+name: Release app3 image finder
 
 on:
   push:
     branches: 
       - master
     paths:
-      - 'app3/**'
+      - 'app3/image-response/**'
 
 jobs:
   build:
@@ -16,8 +16,8 @@ jobs:
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: jakousa/dwk-app3
+        name: jakousa/dwk-app3-image-response
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         tags: ${{ github.sha }}
-        context: app3
+        context: app3/image-response
