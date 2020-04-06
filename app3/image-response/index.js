@@ -16,7 +16,6 @@ const getFile = async () => new Promise(res => {
 
 app.use(async ctx => {
   if (ctx.path.includes('favicon.ico')) return
-  // Get a new image
   ctx.body = await getFile()
   ctx.set('Content-disposition', 'attachment; filename=image.jpg');
   ctx.set('Content-type', 'image/jpeg');
