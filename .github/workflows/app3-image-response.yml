@@ -1,4 +1,4 @@
-name: Release app3 image finder
+name: Release app3 image response
 
 on:
   push:
