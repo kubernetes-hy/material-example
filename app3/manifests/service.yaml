@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: images-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: images
+  ports:
+    - port: 2345
+      protocol: TCP
+      targetPort: 3000
