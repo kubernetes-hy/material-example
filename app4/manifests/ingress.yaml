@@ -8,5 +8,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: hashresponse-svc
-          servicePort: 2345
+          serviceName: imageapi-svc
+          servicePort: 2456

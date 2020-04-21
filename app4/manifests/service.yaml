@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: imageapi-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: imageapi
+  ports:
+    - port: 2456
+      protocol: TCP
+      targetPort: 3001

@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: images-ing
+  name: dwk-material-ingress
 spec:
   rules:
   - http:
