@@ -3,8 +3,17 @@ const client = redis.createClient({
   host: 'redis'
 })
 
+let errorMessaged = false
+
+client.on("ready", () => {
+  console.log('Connected')
+  errorMessaged = false
+})
+
 client.on("error", function (error) {
-  console.error(error)
+  if (errorMessaged) return
+  console.error('Connection errored')
+  errorMessaged = true
 });
 
 const spaces = (number) => {
@@ -19,17 +28,21 @@ const rail = '|---|'
 
 const asyncGet = (key) => new Promise((res, rej) => client.get(key, (err, reply) => err ? rej(err) : res(reply)))
 
-const getAndPrint = async () => {
+const getRailroad = async () => {
   const direction = Number(await asyncGet('direction') || 1)
-  const value = await asyncGet('railroad') || `${spaces(5)}${rail}`
-  const oldSpaces = value.length - rail.length
-  console.log(`${oldSpaces}${value}`)
-
+  const value = await asyncGet('railroad') 
+  const oldSpaces = value ? value.length - rail.length : 4
   const newSpaces = oldSpaces + direction
   client.set('railroad', `${spaces(newSpaces)}${rail}`)
   if (newSpaces > 30) client.set('direction', -1)
   if (newSpaces < 2) client.set('direction', 1)
+  return `${newSpaces}${value}`
 }
 
+const loop = async () => {
+  const railroad = await getRailroad()
+  console.log(railroad)
+  setTimeout(loop, 200)
+}
 
-setInterval(getAndPrint, 100)
+loop()
