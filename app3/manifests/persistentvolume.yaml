@@ -9,7 +9,6 @@ spec:
   volumeMode: Filesystem # This declares that it will be mounted into pods as a directory
   accessModes:
   - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
   local:
     path: /tmp/kube
   nodeAffinity: ## This is only required for local, it defines which nodes can access it
