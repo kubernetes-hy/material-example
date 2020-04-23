@@ -15,3 +15,6 @@ spec:
       containers:
         - name: imageagain
           image: jakousa/dwk-app4:88ec30cbbec274a1fb786a72065dceac3edbc691
+          envFrom:
+          - secretRef:
+              name: pixabay-apikey
