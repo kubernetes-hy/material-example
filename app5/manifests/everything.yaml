@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redisfiller-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redisfiller
+  template:
+    metadata:
+      labels:
+        app: redisfiller
+    spec:
+      containers:
+        - name: redisfiller
+          image: jakousa/dwk-app5:c8177299e064cafc771f65229154b42a1e6ae291
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-pv
+spec:
+  storageClassName: local-storage
+  capacity:
+    storage: 1Gi # Could be e.q. 500Gi. Small amount is to preserve space when testing locally
+  volumeMode: Filesystem # This declares that it will be mounted into pods as a directory
+  accessModes:
+  - ReadWriteOnce
+  local:
+    path: /tmp/kube
+  nodeAffinity: ## This is only required for local, it defines which nodes can access it
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - k3d-k3s-default-worker-0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  type: ClusterIP
+  selector:
+    app: redis
+  clusterIP: None
+  ports:
+  - port: 6379
+    protocol: TCP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-ss
+spec:
+  serviceName: redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:5.0
+          ports:
+            - name: web
+              containerPort: 7777
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: local-storage
+        resources:
+          requests:
+            storage: 400Mi
