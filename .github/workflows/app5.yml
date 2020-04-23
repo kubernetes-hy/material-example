@@ -1,0 +1,23 @@
+name: Release app5
+
+on:
+  push:
+    branches: 
+      - master
+    paths:
+      - 'app5/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: jakousa/dwk-app5
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: ${{ github.sha }}
+        context: app5
