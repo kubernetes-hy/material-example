@@ -73,7 +73,7 @@ spec:
           image: redis:5.0
           ports:
             - name: web
-              containerPort: 7777
+              containerPort: 6379
           volumeMounts:
             - name: data
               mountPath: /data
