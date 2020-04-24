@@ -1,6 +1,6 @@
 const redis = require("redis")
 const client = redis.createClient({
-  host: 'redis'
+  host: process.env.REDIS_HOST || 'localhost'
 })
 
 let errorMessaged = false
