@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seedimage-dep
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: seedimage
+  template:
+    metadata:
+      labels:
+        app: seedimage
+    spec:
+      containers:
+        - name: seedimage
+          image: jakousa/dwk-app6:4bc5f70a13558102c333118c6e042f1723774351
