@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seedimage-dep
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: seedimage
+  template:
+    metadata:
+      labels:
+        app: seedimage
+    spec:
+      containers:
+        - name: seedimage
+          image: gcr.io/PROJECT_ID/IMAGE:TAG
