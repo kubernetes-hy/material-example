@@ -15,3 +15,8 @@ spec:
       containers:
         - name: cpushredder
           image: IMAGE_FROM_KUSTOMIZATION
+          resources: 
+            limits:
+              cpu: "150m"
+              memory: "100Mi"
+              
