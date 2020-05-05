@@ -10,4 +10,5 @@ process.on('message', async (msg) => {
   console.log('started fibo with', msg)
   const solved = await fibonacci(msg)
   console.log(`Fibonacci ${msg}: ${solved}`)
+  process.exit()
 })
