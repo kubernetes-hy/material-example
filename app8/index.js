@@ -22,7 +22,7 @@ const amIDead = () => {
     }, 20 * 1000)
     return false
   }
-  const deadFromRandom = (Math.random() * 100) > 50
+  const deadFromRandom = (Math.random() * 100) > 80
   if (deadFromRandom) console.log('Luck was not on our side')
   if (!deadFromRandom) console.log('Luckily we survived')
   return deadFromRandom

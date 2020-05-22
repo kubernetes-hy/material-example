@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaky-update-dep
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: flaky-update
+  template:
+    metadata:
+      labels:
+        app: flaky-update
+    spec:
+      containers:
+        - name: flaky-update
+          image: IMAGE_FROM_KUSTOMIZATION
+          readinessProbe:
+            initialDelaySeconds: 10 # Initial delay until the readiness is tested
+            periodSeconds: 5 # How often to test
+            httpGet:
+               path: /healthz
+               port: 3541
+          livenessProbe:
+            initialDelaySeconds: 20 # Initial delay until the liveness is tested
+            periodSeconds: 5 # How often to test
+            httpGet:
+               path: /healthz
+               port: 3541
