@@ -13,11 +13,50 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Publish to Registry
+    - name: Publish v1 & v5 to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
+      env:
+        VERSION: working
       with:
         name: jakousa/dwk-app8
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        tags: ${{ github.sha }}
+        tags: v1,v5
+        buildargs: VERSION
+        context: app8
+
+    - name: Publish v2 to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      env:
+        VERSION: broken
+      with:
+        name: jakousa/dwk-app8
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: v2
+        buildargs: VERSION
+        context: app8
+
+    - name: Publish v3 to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      env:
+        VERSION: random
+      with:
+        name: jakousa/dwk-app8
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: v3
+        buildargs: VERSION
+        context: app8
+
+    - name: Publish v4 to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      env:
+        VERSION: delayed_broken
+      with:
+        name: jakousa/dwk-app8
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: v4
+        buildargs: VERSION
         context: app8
