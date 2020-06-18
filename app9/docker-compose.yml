@@ -1,0 +1,35 @@
+  
+version: '3.5'
+
+# Was developing outside of kunneberts
+
+services:
+  nats:
+    image: nats:2
+    container_name: nats
+
+  fetcher:
+    image: app9-fetcher
+    build:
+      context: ./fetcher
+    volumes:
+      - ./fetcher/:/usr/src/app/
+    command: ['npm', 'run', 'dev']
+    container_name: fetcher
+
+  mapper:
+    image: app9-mapper
+    build:
+      context: ./mapper
+    volumes:
+      - ./mapper/:/usr/src/app/
+    command: ['npm', 'run', 'dev']
+
+  saver:
+    image: app9-saver
+    build:
+      context: ./saver
+    volumes:
+      - ./saver/:/usr/src/app/
+    command: ['npm', 'run', 'dev']
+    container_name: saver
