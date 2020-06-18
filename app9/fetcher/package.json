@@ -1,5 +1,5 @@
 {
-  "name": "mock-api",
+  "name": "fetcher",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,8 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
     "faker": "^4.1.0",
+    "nats": "^1.4.9",
     "nodemon": "^2.0.4"
   }
 }

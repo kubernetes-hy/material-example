@@ -1,12 +1,8 @@
 const faker = require('faker')
-const express = require('express')
-const PORT = process.env.PORT || 3000
-const seed = 123
-faker.seed(Number(seed))
 
-const app = express()
+const getUsers = (index) => {
+  faker.seed(index)
 
-app.get('/', (req, res) => {
   let people = []
 
   for (let i = 0; i < 100; i++) {
@@ -22,8 +18,10 @@ app.get('/', (req, res) => {
     }
   }
 
-  return res.json(people.map(p => ({ ...p, friends: Array.from(p.friends)})))
-})
+  return people.map(p => ({ ...p, friends: Array.from(p.friends)}))
+}
 
 
-app.listen(PORT, () => console.log(`listening in ${PORT}`))
+module.exports = {
+  getUsers
+}
