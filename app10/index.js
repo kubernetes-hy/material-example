@@ -5,4 +5,4 @@ const countdown = (time) => {
   setTimeout(() => countdown(time - 1), 1200) // Dramatic timing
 }
 
-countdown(process.argv[2])
+countdown(Number(process.argv[2]) || 10)
