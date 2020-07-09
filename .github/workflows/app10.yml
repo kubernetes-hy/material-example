@@ -1,4 +1,4 @@
-name: Release app1
+name: Release app10
 
 on:
   push:
