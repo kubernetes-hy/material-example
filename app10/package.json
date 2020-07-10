@@ -1,0 +1,19 @@
+{
+  "name": "app10",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@kubernetes/client-node": "^0.12.0",
+    "json-stream": "^1.0.0",
+    "mustache": "^4.0.1",
+    "nodemon": "^2.0.4",
+    "request": "^2.88.2"
+  }
+}

@@ -1,0 +1,23 @@
+apiVersion: stable.dwk/v1
+kind: Countdown
+metadata:
+  name: doomsday
+spec:
+  length: 14
+  image: jakousa/dwk-app10:sha-adaefc5
+---
+apiVersion: stable.dwk/v1
+kind: Countdown
+metadata:
+  name: doomsday1
+spec:
+  length: 15
+  image: jakousa/dwk-app10:sha-adaefc5
+---
+apiVersion: stable.dwk/v1
+kind: Countdown
+metadata:
+  name: doomsday2
+spec:
+  length: 17
+  image: jakousa/dwk-app10:sha-adaefc5
