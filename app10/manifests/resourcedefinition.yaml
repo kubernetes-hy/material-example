@@ -34,6 +34,8 @@ spec:
               properties:
                 length:
                   type: integer
+                delay:
+                  type: integer
                 image:
                   type: string
       additionalPrinterColumns:
@@ -41,3 +43,8 @@ spec:
           type: integer
           description: The length of the countdown
           jsonPath: .spec.length
+        - name: Delay
+          type: integer
+          description: The length of time (ms) between executions
+          jsonPath: .spec.delay
+          
