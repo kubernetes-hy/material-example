@@ -134,4 +134,4 @@ const maintainStatus = async () => {
   request.get(`${kc.getCurrentCluster().server}/apis/batch/v1/jobs?watch=true`, opts).pipe(job_stream)
 }
 
-maintainStatus().catch(err => console.log('WHAT', err))
+maintainStatus()
