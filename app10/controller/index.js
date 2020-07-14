@@ -22,8 +22,8 @@ const sendRequestToApi = async (api, method = 'get', options = undefined) => new
 
 const fieldsFromCountdown = (object) => ({
   countdown_name: object.metadata.name,
-  container_name: `${object.metadata.name}-${JOB_IDENTIFIER}`,
-  job_name: `${object.metadata.name}-${JOB_IDENTIFIER}-job-${object.spec.length}`,
+  container_name: object.metadata.name,
+  job_name: `${object.metadata.name}-job-${object.spec.length}`,
   namespace: object.metadata.namespace,
   delay: object.spec.delay,
   image: object.spec.image,
@@ -45,10 +45,21 @@ const getJobYAML = async (fields) => {
   return mustache.render(deploymentTemplate, fields)
 }
 
+const jobForCountdownAlreadyExists = async (fields) => {
+  const { countdown_name, namespace } = fields
+  const { items } = await sendRequestToApi(`/apis/batch/v1/namespaces/${namespace}/jobs`)
+
+  const alreadyExistingItem = items.find(item => item.metadata.labels.countdown === countdown_name)
+
+  if (alreadyExistingItem) return true
+
+  return false
+}
+
 const createJob = async (fields) => {
   const yaml = await getJobYAML(fields)
   const { namespace } = fields
-
+  console.log('scheduling new job', fields.length)
   return sendRequestToApi(`/apis/batch/v1/namespaces/${namespace}/jobs`, 'post', {
     headers: {
       'Content-Type': 'application/yaml'
@@ -66,7 +77,6 @@ const removeJob = async ({ namespace, job_name }) => {
 }
 
 const removeCountdown = async ({ namespace, countdown_name }) => {
-  cleanupForCountdown({ namespace, countdown_name })
   return sendRequestToApi(`/apis/stable.dwk/v1/namespaces/${namespace}/countdowns/${countdown_name}`, 'delete')
 }
 
@@ -87,7 +97,6 @@ const cleanupForCountdown = async ({ namespace, countdown_name }) => {
 
 const rescheduleJob = (jobObject) => {
   const fields = fieldsFromJob(jobObject)
-  console.log('completed', fields.length)
   if (Number(fields.length) <= 1) {
     console.log('Removing countdown')
     removeCountdown(fields)
@@ -112,6 +121,7 @@ const maintainStatus = async () => {
   countdown_stream.on('data', async ({ type, object }) => {
     if (type === 'ADDED') {
       const fields = fieldsFromCountdown(object)
+      if (await jobForCountdownAlreadyExists(fields)) return
       createJob(fields)
     }
     if (type === 'DELETED') {
@@ -124,7 +134,7 @@ const maintainStatus = async () => {
   const job_stream = new JSONStream()
 
   job_stream.on('data', async ({ type, object }) => {
-    if (!object.metadata.name.includes(JOB_IDENTIFIER)) return
+    if (!object.metadata.labels.countdown) return // If it's not countdown don't handle
     if (type === 'DELETED' || object.metadata.deletionTimestamp) return // Do not handle deleted jobs
     if (!object?.status?.succeeded) return
 

@@ -3,9 +3,9 @@ kind: Countdown
 metadata:
   name: doomsday
 spec:
-  length: 10
+  length: 3
   delay: 500
-  image: jakousa/dwk-app10:sha-fa508b6
+  image: jakousa/dwk-app10:sha-84d581d
 ---
 apiVersion: stable.dwk/v1
 kind: Countdown
@@ -13,5 +13,5 @@ metadata:
   name: doomsday2
 spec:
   length: 20
-  delay: 1200
-  image: jakousa/dwk-app10:sha-fa508b6
+  delay: 1000
+  image: jakousa/dwk-app10:sha-84d581d
