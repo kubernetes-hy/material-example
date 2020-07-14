@@ -69,7 +69,7 @@ const removeJob = async ({ namespace, job_name }) => {
   return sendRequestToApi(`/apis/batch/v1/namespaces/${namespace}/jobs/${job_name}`, 'delete')
 }
 
-const removeCountdown = async ({ namespace, countdown_name }) => sendRequestToApi(`/apis/stable.dwk/v1/namespaces/${namespace}/countdowns/${countdown_name}`, 'delete')
+const removeCountdown = ({ namespace, countdown_name }) => sendRequestToApi(`/apis/stable.dwk/v1/namespaces/${namespace}/countdowns/${countdown_name}`, 'delete')
 
 const removePod = ({ namespace, pod_name }) => sendRequestToApi(`/api/v1/namespaces/${namespace}/pods/${pod_name}`, 'delete')
 
@@ -119,7 +119,7 @@ const maintainStatus = async () => {
 
     if (type === 'ADDED') {
       if (await jobForCountdownAlreadyExists(fields)) return // Restarting application would create new 0th jobs without this check
-      createJob(fields)
+      console.log('Initiated job', await createJob(fields))
     }
     if (type === 'DELETED') cleanupForCountdown(fields)
   })
@@ -133,6 +133,7 @@ const maintainStatus = async () => {
   const job_stream = new JSONStream()
 
   job_stream.on('data', async ({ type, object }) => {
+    console.log('Updated job data in stream')
     if (!object.metadata.labels.countdown) return // If it's not countdown job don't handle
     if (type === 'DELETED' || object.metadata.deletionTimestamp) return // Do not handle deleted jobs
     if (!object?.status?.succeeded) return
