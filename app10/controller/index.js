@@ -6,8 +6,6 @@ const fs = require('fs').promises
 
 // Use Kubernetes client to interact with Kubernetes
 
-const JOB_IDENTIFIER = 'countdown-345'
-
 const timeouts = {}
 
 const kc = new k8s.KubeConfig();
@@ -32,8 +30,8 @@ const fieldsFromCountdown = (object) => ({
 
 const fieldsFromJob = (object) => ({
   countdown_name: object.metadata.labels.countdown,
-  container_name: object.spec.template.spec.containers[0].name,
-  job_name: `${object.spec.template.spec.containers[0].name}-job-${object.metadata.labels.length}`,
+  container_name: object.metadata.labels.countdown,
+  job_name: `${object.metadata.labels.countdown}-job-${object.metadata.labels.length}`,
   namespace: object.metadata.namespace,
   delay: object.metadata.labels.delay,
   image: object.spec.template.spec.containers[0].image,
@@ -49,40 +47,30 @@ const jobForCountdownAlreadyExists = async (fields) => {
   const { countdown_name, namespace } = fields
   const { items } = await sendRequestToApi(`/apis/batch/v1/namespaces/${namespace}/jobs`)
 
-  const alreadyExistingItem = items.find(item => item.metadata.labels.countdown === countdown_name)
-
-  if (alreadyExistingItem) return true
-
-  return false
+  return items.find(item => item.metadata.labels.countdown === countdown_name)
 }
 
 const createJob = async (fields) => {
-  const yaml = await getJobYAML(fields)
-  const { namespace } = fields
-  console.log('scheduling new job', fields.length)
-  return sendRequestToApi(`/apis/batch/v1/namespaces/${namespace}/jobs`, 'post', {
+  console.log('Scheduling new job', fields.length)
+
+  return sendRequestToApi(`/apis/batch/v1/namespaces/${fields.namespace}/jobs`, 'post', {
     headers: {
       'Content-Type': 'application/yaml'
     },
-    body: yaml
+    body: await getJobYAML(fields)
   })
 }
 
 const removeJob = async ({ namespace, job_name }) => {
   const pods = await sendRequestToApi(`/api/v1/namespaces/${namespace}/pods/`)
-  const pod = pods.items.find(pod => pod.metadata.labels['job-name'] === job_name)
-  if (pod) removePod({ namespace, pod_name: pod.metadata.name })
+  pods.items.filter(pod => pod.metadata.labels['job-name'] === job_name).forEach(pod => removePod({ namespace, pod_name: pod.metadata.name }))
 
   return sendRequestToApi(`/apis/batch/v1/namespaces/${namespace}/jobs/${job_name}`, 'delete')
 }
 
-const removeCountdown = async ({ namespace, countdown_name }) => {
-  return sendRequestToApi(`/apis/stable.dwk/v1/namespaces/${namespace}/countdowns/${countdown_name}`, 'delete')
-}
+const removeCountdown = async ({ namespace, countdown_name }) => sendRequestToApi(`/apis/stable.dwk/v1/namespaces/${namespace}/countdowns/${countdown_name}`, 'delete')
 
-const removePod = ({ namespace, pod_name }) => {
-  return sendRequestToApi(`/api/v1/namespaces/${namespace}/pods/${pod_name}`, 'delete')
-}
+const removePod = ({ namespace, pod_name }) => sendRequestToApi(`/api/v1/namespaces/${namespace}/pods/${pod_name}`, 'delete')
 
 const cleanupForCountdown = async ({ namespace, countdown_name }) => {
   console.log('Doing cleanup')
@@ -91,6 +79,7 @@ const cleanupForCountdown = async ({ namespace, countdown_name }) => {
   const jobs = await sendRequestToApi(`/apis/batch/v1/namespaces/${namespace}/jobs`)
   jobs.items.forEach(job => {
     if (!job.metadata.labels.countdown === countdown_name) return
+
     removeJob({ namespace, job_name: job.metadata.name })
   })
 }
@@ -98,10 +87,11 @@ const cleanupForCountdown = async ({ namespace, countdown_name }) => {
 const rescheduleJob = (jobObject) => {
   const fields = fieldsFromJob(jobObject)
   if (Number(fields.length) <= 1) {
-    console.log('Removing countdown')
-    removeCountdown(fields)
-    return
+    console.log('Countdown ended. Removing countdown.')
+    return removeCountdown(fields)
   }
+
+  // Save timeout so if the countdown is suddenly removed we can prevent execution (removing countdown removes job)
   timeouts[fields.countdown_name] = setTimeout(() => {
     removeJob(fields)
     const newLength = Number(fields.length) - 1
@@ -117,24 +107,32 @@ const rescheduleJob = (jobObject) => {
 const maintainStatus = async () => {
   (await client.listNode()).body // A bug in the client(?) was fixed by sending a request and not caring about response
 
+  /**
+   * Watch Countdowns
+   */
+
   const countdown_stream = new JSONStream()
+
   countdown_stream.on('data', async ({ type, object }) => {
+    const fields = fieldsFromCountdown(object)
+
     if (type === 'ADDED') {
-      const fields = fieldsFromCountdown(object)
-      if (await jobForCountdownAlreadyExists(fields)) return
+      if (await jobForCountdownAlreadyExists(fields)) return // Restarting application would create new 0th jobs without this check
       createJob(fields)
     }
-    if (type === 'DELETED') {
-      const fields = fieldsFromCountdown(object)      
-      cleanupForCountdown(fields)
-    }
+    if (type === 'DELETED') cleanupForCountdown(fields)
   })
+
   request.get(`${kc.getCurrentCluster().server}/apis/stable.dwk/v1/countdowns?watch=true`, opts).pipe(countdown_stream)
+
+  /**
+   * Watch Jobs
+   */
 
   const job_stream = new JSONStream()
 
   job_stream.on('data', async ({ type, object }) => {
-    if (!object.metadata.labels.countdown) return // If it's not countdown don't handle
+    if (!object.metadata.labels.countdown) return // If it's not countdown job don't handle
     if (type === 'DELETED' || object.metadata.deletionTimestamp) return // Do not handle deleted jobs
     if (!object?.status?.succeeded) return
 
