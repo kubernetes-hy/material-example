@@ -9,9 +9,8 @@ const fs = require('fs').promises
 const timeouts = {}
 
 const kc = new k8s.KubeConfig();
-// kc.loadFromDefault(); // Access API from local
 
-kc.loadFromCluster(); // Access API inside cluster
+process.env.NODE_ENV === 'development' ? kc.loadFromDefault() : kc.loadFromCluster()
 
 const opts = {}
 kc.applyToRequest(opts)
