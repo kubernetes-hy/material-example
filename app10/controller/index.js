@@ -17,7 +17,7 @@ kc.applyToRequest(opts)
 
 const client = kc.makeApiClient(k8s.CoreV1Api);
 
-const sendRequestToApi = async (api, method = 'get', options = undefined) => new Promise((resolve, reject) => request[method](`${kc.getCurrentCluster().server}${api}`, {...opts, ...options}, (err, res) => err ? reject(err) : resolve(JSON.parse(res.body))))
+const sendRequestToApi = async (api, method = 'get', options = {}) => new Promise((resolve, reject) => request[method](`${kc.getCurrentCluster().server}${api}`, {...opts, ...options, headers: { ...options.headers, ...opts.headers }}, (err, res) => err ? reject(err) : resolve(JSON.parse(res.body))))
 
 const fieldsFromCountdown = (object) => ({
   countdown_name: object.metadata.name,
@@ -52,13 +52,15 @@ const jobForCountdownAlreadyExists = async (fields) => {
 }
 
 const createJob = async (fields) => {
-  console.log('Scheduling new job', fields.length)
+  console.log('Scheduling new job number', fields.length, 'for countdown', fields.countdown_name, 'to namespace', fields.namespace)
+
+  const yaml = await getJobYAML(fields)
 
   return sendRequestToApi(`/apis/batch/v1/namespaces/${fields.namespace}/jobs`, 'post', {
     headers: {
       'Content-Type': 'application/yaml'
     },
-    body: await getJobYAML(fields)
+    body: yaml
   })
 }
 
@@ -106,7 +108,7 @@ const rescheduleJob = (jobObject) => {
 }
 
 const maintainStatus = async () => {
-  (await client.listNode()).body // A bug in the client(?) was fixed by sending a request and not caring about response
+  (await client.listPodForAllNamespaces()).body // A bug in the client(?) was fixed by sending a request and not caring about response
 
   /**
    * Watch Countdowns
@@ -119,7 +121,7 @@ const maintainStatus = async () => {
 
     if (type === 'ADDED') {
       if (await jobForCountdownAlreadyExists(fields)) return // Restarting application would create new 0th jobs without this check
-      console.log('Initiated job', await createJob(fields))
+      createJob(fields)
     }
     if (type === 'DELETED') cleanupForCountdown(fields)
   })
@@ -133,7 +135,6 @@ const maintainStatus = async () => {
   const job_stream = new JSONStream()
 
   job_stream.on('data', async ({ type, object }) => {
-    console.log('Updated job data in stream')
     if (!object.metadata.labels.countdown) return // If it's not countdown job don't handle
     if (type === 'DELETED' || object.metadata.deletionTimestamp) return // Do not handle deleted jobs
     if (!object?.status?.succeeded) return
