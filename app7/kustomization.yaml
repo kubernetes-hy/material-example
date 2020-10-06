@@ -7,4 +7,4 @@ resources:
 images:
 - name: IMAGE_FROM_KUSTOMIZATION
   newName: jakousa/dwk-app7
-  newTag: 0653b8f5a41156a4e08185f7694120ee51ff2026
+  newTag: e11a700350aede132b62d3b5fd63c05d6b976394
