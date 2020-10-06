@@ -3,7 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const axios = require('axios')
 const app = new Koa()
-const PORT = process.env.NODE_ENV || 3001
+const PORT = process.env.PORT || 3001
 
 const directory = path.join('/', 'usr', 'src', 'app', 'files')
 const filePath = path.join(directory, 'image.jpg')

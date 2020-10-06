@@ -2,7 +2,7 @@ require('dotenv').config()
 const Koa = require('koa')
 const axios = require('axios')
 const app = new Koa()
-const PORT = process.env.NODE_ENV || 3001
+const PORT = process.env.PORT || 3001
 const API_KEY = process.env.API_KEY
 
 if (!API_KEY) throw new Error('No value for API_KEY environment variable')

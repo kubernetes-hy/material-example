@@ -1,7 +1,7 @@
 const Koa = require('koa')
 const axios = require('axios')
 const app = new Koa()
-const PORT = process.env.NODE_ENV || 3000
+const PORT = process.env.PORT || 3000
 
 const SEED = Math.random().toString(36).substr(2, 6)
 

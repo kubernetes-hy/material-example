@@ -1,6 +1,6 @@
 const Koa = require('koa')
 const app = new Koa()
-const PORT = process.env.NODE_ENV || 3001
+const PORT = process.env.PORT || 3001
 const FIBOS = process.env.FIBOS || 20
 const { fork } = require('child_process')
 const path = require('path')
