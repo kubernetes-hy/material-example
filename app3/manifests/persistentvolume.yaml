@@ -18,4 +18,4 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - k3d-k3s-default-worker-0
+          - k3d-k3s-default-agent-0
