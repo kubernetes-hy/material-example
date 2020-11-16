@@ -15,4 +15,4 @@ spec:
       serviceAccountName: countdown-controller-account
       containers:
         - name: countdown-controller
-          image: jakousa/dwk-app10-controller:sha-4256579
+          image: sasumaki/dwk-app10:sha-666

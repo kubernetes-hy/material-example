@@ -13,6 +13,14 @@ rules:
   # objects is "jobs"
   resources: ["jobs"]
   verbs: ["get", "list", "watch", "create", "delete"]
-- apiGroups: ["stable.dwk"]
+- apiGroups: ["batch"]
+  # at the HTTP level, the name of the resource for accessing Job
+  # objects is "jobs"
+  resources: ["jobs/status"]
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups: ["stable.dwk.stable.dwk"]
   resources: ["countdowns"]
   verbs: ["get", "list", "watch", "create", "delete"]

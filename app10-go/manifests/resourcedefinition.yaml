@@ -1,52 +1,102 @@
 # in controller/config/crd/bases
 
-# apiVersion: apiextensions.k8s.io/v1
-# kind: CustomResourceDefinition
-# metadata:
-#   # name must match the spec fields below, and be in the form: <plural>.<group>
-#   name: countdowns.stable.dwk
-# spec:
-#   # group name to use for REST API: /apis/<group>/<version>
-#   group: stable.dwk
-#   # either Namespaced or Cluster
-#   scope: Namespaced
-#   names:
-#     # kind is normally the CamelCased singular type. Your resource manifests use this.
-#     kind: Countdown
-#     # plural name to be used in the URL: /apis/<group>/<version>/<plural>
-#     plural: countdowns
-#     # singular name to be used as an alias on the CLI and for display
-#     singular: countdown
-#     # shortNames allow shorter string to match your resource on the CLI
-#     shortNames:
-#     - cd
-#   # list of versions supported by this CustomResourceDefinition
-#   versions:
-#     - name: v1
-#       # Each version can be enabled/disabled by Served flag.
-#       served: true
-#       # One and only one version must be marked as the storage version.
-#       storage: true
-#       schema:
-#         openAPIV3Schema:
-#           type: object
-#           properties:
-#             spec:
-#               type: object
-#               properties:
-#                 length:
-#                   type: integer
-#                 delay:
-#                   type: integer
-#                 image:
-#                   type: string
-#       additionalPrinterColumns:
-#         - name: Length
-#           type: integer
-#           description: The length of the countdown
-#           jsonPath: .spec.length
-#         - name: Delay
-#           type: integer
-#           description: The length of time (ms) between executions
-#           jsonPath: .spec.delay
-          
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.5
+  creationTimestamp: null
+  name: countdowns.stable.dwk.stable.dwk
+spec:
+  group: stable.dwk.stable.dwk
+  names:
+    kind: Countdown
+    listKind: CountdownList
+    plural: countdowns
+    singular: countdown
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      description: Countdown is the Schema for the countdowns API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: CountdownSpec defines the desired state of Countdown
+          properties:
+            delay:
+              type: integer
+            image:
+              type: string
+            length:
+              type: integer
+          type: object
+        status:
+          description: CountdownStatus defines the observed state of Countdown
+          properties:
+            active:
+              description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                of cluster Important: Run "make" to regenerate code after modifying
+                this file'
+              items:
+                description: ObjectReference contains enough information to let you
+                  inspect or modify the referred object.
+                properties:
+                  apiVersion:
+                    description: API version of the referent.
+                    type: string
+                  fieldPath:
+                    description: 'If referring to a piece of an object instead of
+                      an entire object, this string should contain a valid JSON/Go
+                      field access statement, such as desiredState.manifest.containers[2].
+                      For example, if the object reference is to a container within
+                      a pod, this would take on a value like: "spec.containers{name}"
+                      (where "name" refers to the name of the container that triggered
+                      the event) or if no container name is specified "spec.containers[2]"
+                      (container with index 2 in this pod). This syntax is chosen
+                      only to have some well-defined way of referencing a part of
+                      an object. TODO: this design is not final and this field is
+                      subject to change in the future.'
+                    type: string
+                  kind:
+                    description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                    type: string
+                  name:
+                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                    type: string
+                  namespace:
+                    description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                    type: string
+                  resourceVersion:
+                    description: 'Specific resourceVersion to which this reference
+                      is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                    type: string
+                  uid:
+                    description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                    type: string
+                type: object
+              type: array
+          type: object
+      type: object
+  version: v1
+  versions:
+  - name: v1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
