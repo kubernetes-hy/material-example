@@ -1,0 +1,18 @@
+apiVersion: stable.dwk.stable.dwk/v1
+kind: Countdown
+metadata:
+  name: doomsday
+  namespace: doom
+spec:
+  length: 10
+  delay: 3000
+  image: jakousa/dwk-app10:sha-84d581d
+---
+# apiVersion: stable.dwk.stable.dwk/v1
+# kind: Countdown
+# metadata:
+#   name: newday
+# spec:
+#   length: 20
+#   delay: 1000
+#   image: jakousa/dwk-app10:sha-84d581d

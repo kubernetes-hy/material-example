@@ -1,0 +1,7 @@
+domain: stable.dwk
+repo: stable.dwk
+resources:
+- group: stable.dwk
+  kind: Countdown
+  version: v1
+version: "2"

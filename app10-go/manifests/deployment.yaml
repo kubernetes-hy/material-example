@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: countdown-controller-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: countdown-controller
+  template:
+    metadata:
+      labels:
+        app: countdown-controller
+    spec:
+      serviceAccountName: countdown-controller-account
+      containers:
+        - name: countdown-controller
+          image: jakousa/dwk-app10-controller:sha-4256579

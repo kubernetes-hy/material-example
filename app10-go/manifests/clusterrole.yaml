@@ -1,0 +1,18 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: countdown-controller-role
+rules:
+- apiGroups: [""]
+  # at the HTTP level, the name of the resource for accessing Pod
+  # objects is "pods"
+  resources: ["pods"]
+  verbs: ["get", "list", "delete"]
+- apiGroups: ["batch"]
+  # at the HTTP level, the name of the resource for accessing Job
+  # objects is "jobs"
+  resources: ["jobs"]
+  verbs: ["get", "list", "watch", "create", "delete"]
+- apiGroups: ["stable.dwk"]
+  resources: ["countdowns"]
+  verbs: ["get", "list", "watch", "create", "delete"]

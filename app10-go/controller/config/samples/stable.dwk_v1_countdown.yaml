@@ -1,0 +1,7 @@
+apiVersion: stable.dwk.stable.dwk/v1
+kind: Countdown
+metadata:
+  name: countdown-sample
+spec:
+  # Add fields here
+  foo: bar
