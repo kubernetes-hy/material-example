@@ -21,6 +21,7 @@ Congratulations, now you have a ton of boilerplate
 Fill in CRD `controller/api/v1/countdown_types.go`
 
 The controller watches relevant resources and when an event happens to them it calls the Reconcile function. In the reconcile function you write the actions the controller is supposed to do steer the resource to its' desired state.
+https://godoc.org/github.com/kubernetes-sigs/controller-runtime/pkg/reconcile
 
 Write reconciler function `controllers/countdown_controller.go`
 
@@ -33,7 +34,7 @@ to test your controller `make run` and then apply a Countdown `kubectl apply -f 
 
 If its good deploy it
 ```
-make docker-build docker-push IMG=sasumaki/dwk-app10:sha-666
+make docker-build docker-push IMG=sasumaki/dwk-app10:sha-666420
 ```
 
 ```

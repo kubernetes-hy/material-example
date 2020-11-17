@@ -91,12 +91,15 @@ func constructJobForCountdown(countdown *stabledwkv1.Countdown, r *CountdownReco
 // +kubebuilder:rbac:groups=stable.dwk.stable.dwk,resources=countdowns/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=batch,resources=jobs/status,verbs=get
+
 // Reconcile reconciles Countdowns
+// Doesn't really deal with manifest updates or deletions during runtime
+// just to show you the general idea.
 func (r *CountdownReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
 	_ = r.Log.WithValues("countdown", req.NamespacedName)
-	var countdown stabledwkv1.Countdown
 
+	var countdown stabledwkv1.Countdown
 	if err := r.Get(ctx, req.NamespacedName, &countdown); err != nil {
 		fmt.Println(err, "unable to fetch Countdown")
 		// we'll ignore not-found errors, since they can't be fixed by an immediate
@@ -121,6 +124,10 @@ func (r *CountdownReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 
 		return false, ""
 	}
+
+	// We just count how many countdowns are already done to determine which to run next.
+	// should add extra steps to make sure it's not too early or late for robustness.
+
 	for i, j := range childJobs.Items {
 
 		_, finishedType := isJobFinished(&j)
@@ -136,12 +143,12 @@ func (r *CountdownReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	}
 
 	i := len(activeJobs) + len(finishedJobs)
-
 	job, err := constructJobForCountdown(&countdown, r, countdown.Spec.Length-i)
-	i = i + 1
 
 	if i == countdown.Spec.Length {
 		fmt.Println("We are done, nothing to reconcile")
+		// we could add cleanup here
+		// r.Delete(ctx, &countdown)
 		return ctrl.Result{}, nil
 	}
 	if err != nil {
@@ -156,7 +163,7 @@ func (r *CountdownReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 
 	fmt.Println("created Job for Countdown run", job.Name)
 
-	// Reconcile after delay
+	// Requeue a reconciliation call after the delay given in spec.
 	return ctrl.Result{RequeueAfter: time.Duration(countdown.Spec.Delay) * time.Millisecond}, nil
 }
 

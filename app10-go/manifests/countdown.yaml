@@ -5,7 +5,7 @@ metadata:
   namespace: doom
 spec:
   length: 5
-  delay: 5000
+  delay: 3000
   image: jakousa/dwk-app10:sha-84d581d
 ---
 apiVersion: stable.dwk.stable.dwk/v1
