@@ -1,5 +1,6 @@
-READ: book.kubebuilder.io 
+**READ:** https://book.kubebuilder.io 
 
+**TLDR:**
 Install kubebuilder
 ```
 ./install.sh
