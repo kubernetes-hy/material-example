@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifests/deployment.yaml
+images:
+  - name: IMAGE_PLACEHOLDER
+    newName: jakousa/dwk-4-gitops-app
+    newTag: fdafd7088d04892815ed037cf30ca4f61c7af2f7
