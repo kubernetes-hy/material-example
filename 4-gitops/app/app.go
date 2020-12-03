@@ -11,5 +11,5 @@ func main() {
 		randomenough := uuid.New().String()[0:6]
 		fmt.Println(randomenough)
 		time.Sleep(5 * time.Second)
-	}
+  }
 }
