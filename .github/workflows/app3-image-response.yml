@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'app3/image-response/**'
+      - '.github/workflows/app3-image-response.yml'
 
 jobs:
   build:

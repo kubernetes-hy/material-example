@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'app10/example-countdown/**'
+      - '.github/workflows/app10-countdown.yml'
 
 jobs:
   build:

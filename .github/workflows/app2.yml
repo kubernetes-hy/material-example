@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'app2/**'
+      - '.github/workflows/app2.yml'
 
 jobs:
   build:

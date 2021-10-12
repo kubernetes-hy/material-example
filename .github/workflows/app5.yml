@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'app5/**'
+      - '.github/workflows/app5.yml'
 
 jobs:
   build:

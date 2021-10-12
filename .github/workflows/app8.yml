@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'app8/**'
+      - '.github/workflows/app8.yml'
 
 jobs:
   build:

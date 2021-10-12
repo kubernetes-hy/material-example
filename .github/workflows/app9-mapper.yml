@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'app9/mapper/**'
+      - '.github/workflows/app9-mapper.yml'
 
 jobs:
   build:
