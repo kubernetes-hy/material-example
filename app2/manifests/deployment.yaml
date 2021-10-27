@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: hashresponse
-          image: jakousa/dwk-app2:e11a700350aede132b62d3b5fd63c05d6b976394
+          image: jakousa/dwk-app2:b7fc18de2376da80ff0cfc72cf581a9f94d10e64
