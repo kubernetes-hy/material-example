@@ -12,7 +12,7 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: dwk-cluster
   GKE_ZONE: europe-north1-b
-  IMAGE: jakousa/dwk-app6
+  IMAGE: dwk-environments
 
 jobs:
   setup-build-publish-deploy:
@@ -61,5 +61,5 @@ jobs:
         cd ./app6/
         kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA
         kustomize build . | kubectl apply -f -
-        kubectl rollout status deployment/dwk-environments
+        kubectl rollout status deployment/$IMAGE
         kubectl get services -o wide
