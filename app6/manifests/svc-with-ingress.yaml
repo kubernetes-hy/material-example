@@ -11,7 +11,7 @@ spec:
       protocol: TCP
       targetPort: 3000
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: seedimage-ing
@@ -20,6 +20,9 @@ spec:
   - http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: seedimage-svc
-          servicePort: 80
+          service:
+            name: seedimage-svc
+            port:
+              number: 80
