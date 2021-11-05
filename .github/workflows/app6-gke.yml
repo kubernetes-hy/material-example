@@ -6,7 +6,7 @@ on:
       - master
     paths:
       - 'app6/**'
-      - '.github/workflows/app6.yml'
+      - '.github/workflows/app6-gke.yml'
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
