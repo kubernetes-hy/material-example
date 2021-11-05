@@ -4,5 +4,5 @@ resources:
 - manifests/kustom-deployment.yaml
 - manifests/service.yaml
 images:
-- name: gcr.io/PROJECT_ID/IMAGE:TAG
+- name: gcr.io/PROJECT_ID/IMAGE
   newName: jakousa/dwk-app6:e11a700350aede132b62d3b5fd63c05d6b976394
