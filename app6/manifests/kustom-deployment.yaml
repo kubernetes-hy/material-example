@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: seedimage
-          image: gcr.io/PROJECT_ID/IMAGE:TAG
+          image: gcr.io/PROJECT_ID/IMAGE
