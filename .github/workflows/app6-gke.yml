@@ -42,7 +42,7 @@ jobs:
     # Build the Docker image
     - name: Build
       run: |-
-        docker build \
+        cd ./app6/ && docker build \
           --tag "gcr.io/$PROJECT_ID/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA" \
           .
 
