@@ -5,4 +5,4 @@ resources:
 images:
 - name: IMAGE_PLACEHOLDER
   newName: jakousa/dwk-4-gitops-app
-  newTag: 5e7dbe06e256b14260dbb5ba74dc045f5e96493f
+  newTag: b15411f387bb2a2286676b92a87fd85aa9b682a5
