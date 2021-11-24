@@ -15,15 +15,50 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    # Build and push
-    - name: Publish to Registry
-      uses: docker/build-push-action@v1
+    - name: Prepare
+      id: prep
+      run: |
+        DOCKER_IMAGE=jakousa/dwk-4-gitops-app
+        # Set the platforms to build for here and thus reduce duplicating it.
+        PLATFORMS=amd64,arm,arm64
+        TAGS="${DOCKER_IMAGE}:${{ github.sha }}"
+        # Set output parameters.
+        if [ "${{github.event_name}}" == "pull_request" ]; then
+          echo ::set-output name=push::false
+        else
+          echo ::set-output name=push::true
+          echo ::set-output name=tags::${TAGS}
+          echo ::set-output name=docker_image::${DOCKER_IMAGE}
+        fi
+        echo ::set-output name=platforms::${PLATFORMS}
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
       with:
-        repository: jakousa/dwk-4-gitops-app
+        platforms: ${{ steps.prep.outputs.platforms }}
+
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+      with:
+        install: true
+        version: latest
+        driver-opts: image=moby/buildkit:latest
+
+    - name: Login to Docker Hub
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v1
+      with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        tags: ${{ github.sha }}
-        path: 4-gitops/app
+
+    - name: Build and Push
+      uses: docker/build-push-action@v2
+      with:
+        builder: ${{ steps.buildx.outputs.name }}
+        context: 4-gitops/app
+        platforms: ${{ steps.prep.outputs.platforms }}
+        push: ${{ steps.prep.outputs.push }}
+        tags: ${{ steps.prep.outputs.tags }}
 
   deploy:
     name: Deploy
@@ -33,20 +68,18 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    # Set up kustomize
     - name: Set up Kustomize
-      working-directory: 4-gitops/manifests
-      run: |-
-        curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
-        chmod u+x ./kustomize
+      uses: imranismail/setup-kustomize@v1
 
     # Update yamls
     - name: Update yamls
       working-directory: 4-gitops/manifests
       run: |-
-        ./kustomize edit set image IMAGE_PLACEHOLDER=jakousa/dwk-4-gitops-app:${{ github.sha }}
+        kustomize edit set image IMAGE_PLACEHOLDER=jakousa/dwk-4-gitops-app:${{ github.sha }}
 
     # Commit and push
-    - uses: EndBug/add-and-commit@v5
+    - uses: EndBug/add-and-commit@v7
       with:
         add: '4-gitops/manifests/kustomization.yaml'
         message: New version release for gitops-app ${{ github.sha }}
