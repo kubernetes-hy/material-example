@@ -19,7 +19,7 @@ const amIDead = () => {
     setTimeout(() => {
       iAmDead = true
       console.log('I died')
-    }, 20 * 1000)
+    }, 60 * 1000)
     return false
   }
   const deadFromRandom = (Math.random() * 100) > 90
@@ -30,7 +30,8 @@ const amIDead = () => {
 
 router.get('/', ctx => {
   ctx.status = iAmDead ? 500 : 200
-  ctx.body = iAmDead ? 'broken' : 'app works'
+  const status = iAmDead ? 'broken' : 'working'
+  ctx.body = `app status: ${status}\nversion: ${version}`
 })
 
 router.get('/healthz', ctx => {
