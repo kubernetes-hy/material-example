@@ -28,6 +28,11 @@ const amIDead = () => {
   return deadFromRandom
 }
 
+router.get('/', ctx => {
+  ctx.status = iAmDead ? 500 : 200
+  ctx.body = iAmDead ? 'broken' : 'app works'
+})
+
 router.get('/healthz', ctx => {
   ctx.status = iAmDead ? 500 : 200
 
@@ -35,10 +40,9 @@ router.get('/healthz', ctx => {
   iAmDead = amIDead()
 })
 
-
 app.use(router.routes())
 
 app.listen(PORT, () => { 
   iAmDead = amIDead()
-  console.log(`Started in port ${PORT}`) 
+  console.log(`Version ${version} started in port ${PORT}`) 
 })
