@@ -1,0 +1,299 @@
+adminPassword: admin
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: default
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+dashboards:
+  default:
+    nats-overview:
+      json: |
+        {
+          "annotations": {
+            "list": [
+              {
+                "builtIn": 1,
+                "datasource": {
+                  "type": "grafana",
+                  "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+              }
+            ]
+          },
+          "editable": true,
+          "fiscalYearStartMonth": 0,
+          "graphTooltip": 0,
+          "id": null,
+          "links": [],
+          "liveNow": false,
+          "panels": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "red",
+                        "value": null
+                      },
+                      {
+                        "color": "green",
+                        "value": 1
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 0,
+                "y": 0
+              },
+              "id": 1,
+              "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "textMode": "auto"
+              },
+              "pluginVersion": "11.0.0",
+              "targets": [
+                {
+                  "expr": "max(up{job=\"nats\"})",
+                  "legendFormat": "",
+                  "refId": "A"
+                }
+              ],
+              "title": "NATS Target Up",
+              "type": "stat"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 6,
+                "x": 6,
+                "y": 0
+              },
+              "id": 2,
+              "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "textMode": "auto"
+              },
+              "pluginVersion": "11.0.0",
+              "targets": [
+                {
+                  "expr": "sum(nats_varz_connections)",
+                  "legendFormat": "",
+                  "refId": "A"
+                }
+              ],
+              "title": "Connections",
+              "type": "stat"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "mappings": [],
+                  "unit": "ops"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 6
+              },
+              "id": 3,
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "pluginVersion": "11.0.0",
+              "targets": [
+                {
+                  "expr": "sum(rate(nats_varz_in_msgs[5m]))",
+                  "legendFormat": "in msgs/s",
+                  "refId": "A"
+                },
+                {
+                  "expr": "sum(rate(nats_varz_out_msgs[5m]))",
+                  "legendFormat": "out msgs/s",
+                  "refId": "B"
+                }
+              ],
+              "title": "Message Throughput",
+              "type": "timeseries"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "PBFA97CFB590B2093"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "mappings": [],
+                  "unit": "Bps"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 6
+              },
+              "id": 4,
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "table",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "pluginVersion": "11.0.0",
+              "targets": [
+                {
+                  "expr": "sum(rate(nats_varz_in_bytes[5m]))",
+                  "legendFormat": "in B/s",
+                  "refId": "A"
+                },
+                {
+                  "expr": "sum(rate(nats_varz_out_bytes[5m]))",
+                  "legendFormat": "out B/s",
+                  "refId": "B"
+                }
+              ],
+              "title": "Byte Throughput",
+              "type": "timeseries"
+            }
+          ],
+          "refresh": "30s",
+          "schemaVersion": 39,
+          "tags": [
+            "nats"
+          ],
+          "templating": {
+            "list": []
+          },
+          "time": {
+            "from": "now-30m",
+            "to": "now"
+          },
+          "timepicker": {},
+          "timezone": "",
+          "title": "NATS Overview",
+          "uid": "nats-overview",
+          "version": 1,
+          "weekStart": ""
+        }
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prom-prometheus-server
+        isDefault: true
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki-gateway.monitoring.svc.cluster.local
+        jsonData:
+          httpHeaderName1: X-Scope-OrgID
+        secureJsonData:
+          httpHeaderValue1: "1"
