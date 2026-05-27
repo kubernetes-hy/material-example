@@ -44,7 +44,7 @@ dashboards:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "uid": "prometheus-main"
               },
               "fieldConfig": {
                 "defaults": {
@@ -103,7 +103,7 @@ dashboards:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "uid": "prometheus-main"
               },
               "fieldConfig": {
                 "defaults": {
@@ -162,7 +162,7 @@ dashboards:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "uid": "prometheus-main"
               },
               "fieldConfig": {
                 "defaults": {
@@ -196,12 +196,12 @@ dashboards:
               "pluginVersion": "11.0.0",
               "targets": [
                 {
-                  "expr": "sum(rate(nats_varz_in_msgs[5m]))",
+                  "expr": "sum(clamp_min(delta(nats_varz_in_msgs[5m]), 0)) / 300 or vector(0)",
                   "legendFormat": "in msgs/s",
                   "refId": "A"
                 },
                 {
-                  "expr": "sum(rate(nats_varz_out_msgs[5m]))",
+                  "expr": "sum(clamp_min(delta(nats_varz_out_msgs[5m]), 0)) / 300 or vector(0)",
                   "legendFormat": "out msgs/s",
                   "refId": "B"
                 }
@@ -212,7 +212,7 @@ dashboards:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "uid": "prometheus-main"
               },
               "fieldConfig": {
                 "defaults": {
@@ -246,12 +246,12 @@ dashboards:
               "pluginVersion": "11.0.0",
               "targets": [
                 {
-                  "expr": "sum(rate(nats_varz_in_bytes[5m]))",
+                  "expr": "sum(clamp_min(delta(nats_varz_in_bytes[5m]), 0)) / 300 or vector(0)",
                   "legendFormat": "in B/s",
                   "refId": "A"
                 },
                 {
-                  "expr": "sum(rate(nats_varz_out_bytes[5m]))",
+                  "expr": "sum(clamp_min(delta(nats_varz_out_bytes[5m]), 0)) / 300 or vector(0)",
                   "legendFormat": "out B/s",
                   "refId": "B"
                 }
@@ -285,6 +285,7 @@ datasources:
     apiVersion: 1
     datasources:
       - name: Prometheus
+        uid: prometheus-main
         type: prometheus
         access: proxy
         url: http://prom-prometheus-server
