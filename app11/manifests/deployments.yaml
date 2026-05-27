@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mapper
-          image: mluukkai/dwk-app11-mapper:7
+          image: mluukkai/dwk-app11-mapper:8
           env:
             - name: NATS_URL
               value: nats://my-nats:4222
@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
         - name: fetcher
-          image: mluukkai/dwk-app11-fetcher:7
+          image: mluukkai/dwk-app11-fetcher:8
           env:
             - name: NATS_URL
               value: nats://my-nats:4222
@@ -56,7 +56,7 @@ spec:
     spec:
       containers:
         - name: saver
-          image: mluukkai/dwk-app11-saver:7
+          image: mluukkai/dwk-app11-saver:8
           env:
             - name: NATS_URL
               value: nats://my-nats:4222
