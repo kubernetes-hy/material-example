@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mapper-dep
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: mapper
+  template:
+    metadata:
+      labels:
+        app: mapper
+    spec:
+      containers:
+        - name: mapper
+          image: mluukkai/dwk-app11-mapper:7
+          env:
+            - name: NATS_URL
+              value: nats://my-nats:4222
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fetcher-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fetcher
+  template:
+    metadata:
+      labels:
+        app: fetcher
+    spec:
+      containers:
+        - name: fetcher
+          image: mluukkai/dwk-app11-fetcher:7
+          env:
+            - name: NATS_URL
+              value: nats://my-nats:4222
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saver-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: saver
+  template:
+    metadata:
+      labels:
+        app: saver
+    spec:
+      containers:
+        - name: saver
+          image: mluukkai/dwk-app11-saver:7
+          env:
+            - name: NATS_URL
+              value: nats://my-nats:4222
